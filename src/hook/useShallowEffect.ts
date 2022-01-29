@@ -12,7 +12,7 @@ import { areArraysShallowEqual } from "../service/FunUtil";
  *          But : éviter l'oubli de mémoisation des dépendances (de type tableau).
  * 
  */
-export function useShallowPreserveDeps(deps:unknown[]):any[] {
+export function useShallowPreserveDeps<O = any>(deps:unknown[]):O[] {
   const previous = useRef<unknown[]>();
 
   if (previous.current && isArray(deps)) {
@@ -30,11 +30,11 @@ export function useShallowPreserveDeps(deps:unknown[]):any[] {
     }
     if (!foundDiff) {
       // Les dépendances n'ont pas changées, du coup, on retourne l'ancien tableau de dépendances
-      return previous.current;
+      return previous.current as O[];
     }
   }
   previous.current = deps;
-  return deps;
+  return deps as O[];
 };
 
 export function useShallowEffect (f:EffectCallback, inputDeps:unknown[]) {

@@ -7,10 +7,10 @@ import { useShallowPreserveDeps } from "./useShallowEffect";
 // voir par ici : https://usehooks-ts.com/react-hook/use-intersection-observer
 
 const useIntersectionObservers = (inTargets:Element[], root:Element | Document | null, rootMargin:string, threshold?:number) => {
-  const [getVisibleTargets, setVisibleTargets] = useRefState([]);
+  const [getVisibleTargets, setVisibleTargets] = useRefState<Element[]>([]);
 
   // protect queries and values from lack of memoization 
-  const [targets] = useShallowPreserveDeps([inTargets]);
+  const [targets] = useShallowPreserveDeps<Element[]>([inTargets]);
 
   useEffect(() => {
 
@@ -41,7 +41,7 @@ const useIntersectionObservers = (inTargets:Element[], root:Element | Document |
         threshold: threshold || 0.75,
       }
     );
-    targets.forEach((ref) => ref && observer.observe(ref));
+    targets.forEach((ref:Element) => ref && observer.observe(ref));
 
     return () => observer.disconnect();
 
