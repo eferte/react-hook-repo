@@ -1,6 +1,5 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { isFunction } from "../type/utils";
-import useRefresh from "./useRefresh";
 
 /*
  *
@@ -10,7 +9,7 @@ import useRefresh from "./useRefresh";
 export default function useRefState<S>(
   initialValueOrInitializer: S | (() => S)
 ): [() => S, (value: S | ((old: S) => S)) => void] {
-  const [refresh] = useRefresh();
+  const [, refresh] = useState(0);
   const valueRef = useRef<S>(
     isFunction(initialValueOrInitializer)
       ? initialValueOrInitializer()
@@ -21,10 +20,9 @@ export default function useRefState<S>(
       (): S => valueRef.current,
       (value: S | ((old: S) => S)): void => {
         valueRef.current = isFunction(value) ? value(valueRef.current) : value;
-        refresh();
+        refresh(n => n + 1);
       },
     ],
-    // eslint-disable-next-line
     []
   );
 }
